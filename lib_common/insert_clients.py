@@ -1,32 +1,25 @@
-import os
-
 from datetime import datetime
 
-from db_handle import db, PROJECT_DIR
+import pandas as pd
+
+from db_handle import insert_values
 
 
 def insert_data():
     data_dict = {}
     for val in [
-        'tw_username', 'ig_username', 'phone', 'firstname', 'lastname',
-        'email', 'tw_password', 'ig_password'
+        'tw_username', 'ig_username', 'phone', 'firstname', 'lastname', 'email'
     ]:
-        data_dict[val] = input("Please input {}: ".format(val))
+        data_dict[val] = [input("Please input {}: ".format(val))]
 
     return data_dict
 
 
-def insert_into_db(data_dict):
-    sql_path = os.path.join(PROJECT_DIR, 'sql', 'insert_client_data.sql')
-    query = open(sql_path, 'r').read().format(**data_dict)
-    db.execute(query)
-
-
 def get_client_values():
     data_dict = insert_data()
-    print("These are the values inserted")
+    print("\nThese are the values inserted")
     for k, v in data_dict.items():
-        print(f'{k}:', v)
+        print(f'{k}:', v[0])
 
     values_ok = input("Are these values ok? y/n ")
     if values_ok not in ['y', 'n']:
@@ -34,7 +27,8 @@ def get_client_values():
 
     if values_ok == 'y':
         data_dict['created_on'] = datetime.now()
-        insert_into_db(data_dict)
+        data_df = pd.DataFrame(data_dict)
+        insert_values(data_df, 'clients')
         print("Data inserted ok :)")
     else:
         get_client_values()

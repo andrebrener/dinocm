@@ -4,6 +4,7 @@ import logging
 import logging.config
 
 from instapy import InstaPy
+
 from functions import (
     follow_users, LIB_COMMON_DIR, PROJECT_DIR, take_a_nap, unfollow_haters
 )
@@ -30,7 +31,7 @@ def get_media_id():
     return media_id
 
 
-def turn_follow_on(max_interactions, media_id):
+def turn_follow_on(max_interactions, min_followers, min_following, media_id):
 
     for username, vals in user_data.items():
         key = vals['key']
@@ -40,7 +41,10 @@ def turn_follow_on(max_interactions, media_id):
             username=username, password=key, headless_browser=True
         )
 
-        # follow users
+        follow_users(
+            session, username, users_to_copy, media_id, max_interactions,
+            min_followers, min_following
+        )
 
     logger.info("Finished following")
 
@@ -52,21 +56,24 @@ def turn_unfollow_on(max_interactions, media_id):
     for username, vals in user_data.items():
 
         key = vals['key']
+        untouchable_users = vals['untouchable_users']
 
         session = InstaPy(
             username=username, password=key, headless_browser=True
         )
 
-        # unfollow users
+        unfollow_haters(
+            session, username, untouchable_users, media_id, max_interactions
+        )
 
     logger.info("Finished unfollowing")
 
     return None
 
 
-def main(max_interactions):
+def main(max_interactions, min_followers, min_following):
     media_id = get_media_id()
-    turn_follow_on(max_interactions, media_id)
+    turn_follow_on(max_interactions, media_id, min_followers, min_following)
     take_a_nap(3000, 10000)
     turn_unfollow_on(max_interactions, media_id)
     take_a_nap(3000, 10000)
@@ -75,4 +82,4 @@ def main(max_interactions):
 
 if __name__ == '__main__':
     logging.config.dictConfig(config['logger'])
-    main(2)
+    main(1, 50, 10000)

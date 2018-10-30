@@ -10,8 +10,10 @@ import pandas as pd
 
 from instapy import InstaPy
 
-from main import get_account_data, get_media_id
-from functions import get_user_id, LIB_COMMON_DIR, PROJECT_DIR
+from main import get_media_id
+from functions import (
+    get_account_data, get_user_id, LIB_COMMON_DIR, PROJECT_DIR
+)
 from user_data import user_data
 
 for p in [LIB_COMMON_DIR, PROJECT_DIR]:

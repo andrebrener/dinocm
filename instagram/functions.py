@@ -12,6 +12,8 @@ import pandas as pd
 from instapy import InstaPy
 from instapy.util import smart_run
 
+from user_data import user_data
+
 INSTAGRAM_DIR = os.path.dirname(os.path.realpath(__file__))
 PROJECT_DIR = INSTAGRAM_DIR[:INSTAGRAM_DIR.index('instagram')]
 LIB_COMMON_DIR = os.path.join(PROJECT_DIR, 'lib_common')
@@ -68,7 +70,14 @@ def get_account_data(session, user):
 
 
 def follow_users(
-    session, username, users, media_id, max_interactions, not_follow_users=[]
+    session,
+    username,
+    users,
+    media_id,
+    max_interactions,
+    min_followers,
+    min_following,
+    not_follow_users=[]
 ):
 
     user_id = get_user_id(username)
@@ -83,22 +92,28 @@ def follow_users(
     n = 1
     for u in sample(users, len(users)):
 
-        with smart_run(session):
+        new_session = InstaPy(
+            username=username,
+            password=user_data[username]['key'],
+            headless_browser=True
+        )
 
-            followers = session.grab_followers(
+        with smart_run(new_session):
+
+            followers = new_session.grab_followers(
                 username=u,
                 amount="full",
                 live_match=False,
                 store_locally=False
             )
-            session.set_relationship_bounds(
+            new_session.set_relationship_bounds(
                 enabled=True,
                 delimit_by_numbers=True,
-                min_followers=700,
-                min_following=20
+                min_followers=0,
+                min_following=0
             )
 
-            session.set_do_follow(enabled=True, times=1)
+            new_session.set_do_follow(enabled=True, times=1)
 
             for f in sample(followers, len(followers)):
                 if n > max_interactions:
@@ -106,16 +121,29 @@ def follow_users(
 
                 if f not in unique_not_follow:
                     try:
-
-                        session.follow_by_list(followlist=[f])
-
-                        user_followers, user_follows = get_account_data(
-                            session, f
+                        user_followers = new_session.grab_followers(
+                            username=f,
+                            amount="full",
+                            live_match=False,
+                            store_locally=False
                         )
+                        user_follows = new_session.grab_following(
+                            username=f,
+                            amount="full",
+                            live_match=False,
+                            store_locally=False
+                        )
+
+                        if not (
+                            user_followers >= min_following
+                            and user_follows >= min_following
+                        ):
+                            continue
+
+                        new_session.follow_by_list(followlist=[f])
 
                         f_dict = {
                             'client_id': [user_id],
-                            'id': [f.id],
                             'username': [f],
                             'user_followers': [len(user_followers)],
                             'user_follows': [len(user_follows)],

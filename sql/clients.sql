@@ -6,7 +6,5 @@ CREATE TABLE clients (
  firstname VARCHAR(32) NOT NULL,
  lastname VARCHAR(32) NOT NULL,
  email TEXT NOT NULL,
- created_on TIMESTAMP NOT NULL,
- tw_password TEXT,
- ig_password TEXT
+ created_on TIMESTAMP NOT NULL
 )
