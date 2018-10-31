@@ -31,7 +31,8 @@ def get_media_id():
     return media_id
 
 
-def turn_follow_on(max_interactions, min_followers, min_following, media_id):
+def turn_follow_on(max_interactions, min_followers, min_following, media_id,
+        follow_for_like):
 
     for username, vals in user_data.items():
         key = vals['key']
@@ -43,8 +44,7 @@ def turn_follow_on(max_interactions, min_followers, min_following, media_id):
 
         follow_users(
             session, username, users_to_copy, media_id, max_interactions,
-            min_followers, min_following
-        )
+            min_followers, min_following, follow_for_like)
 
     logger.info("Finished following")
 
@@ -71,9 +71,10 @@ def turn_unfollow_on(max_interactions, media_id):
     return None
 
 
-def main(max_interactions, min_followers, min_following):
+def main(max_interactions, min_followers, min_following, follow_for_like=False):
     media_id = get_media_id()
-    turn_follow_on(max_interactions, media_id, min_followers, min_following)
+    turn_follow_on(max_interactions, media_id, min_followers, min_following,
+            follow_for_like)
     take_a_nap(3000, 10000)
     turn_unfollow_on(max_interactions, media_id)
     take_a_nap(3000, 10000)
@@ -82,4 +83,4 @@ def main(max_interactions, min_followers, min_following):
 
 if __name__ == '__main__':
     logging.config.dictConfig(config['logger'])
-    main(1, 50, 10000)
+    main(1, 50, 10000, follow_for_like=True)

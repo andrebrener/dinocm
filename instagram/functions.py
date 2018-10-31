@@ -77,6 +77,7 @@ def follow_users(
     max_interactions,
     min_followers,
     min_following,
+    follow_for_like,
     not_follow_users=[]
 ):
 
@@ -135,12 +136,20 @@ def follow_users(
                         )
 
                         if not (
-                            user_followers >= min_following
-                            and user_follows >= min_following
+                            len(user_followers) >= min_following
+                            and len(user_follows) >= min_following
                         ):
                             continue
 
-                        new_session.follow_by_list(followlist=[f])
+                        if follow_for_like:
+                            new_session.follow_likers(
+                                [f],
+                                photos_grab_amount=3,
+                                follow_likers_per_photo=25,
+                                randomize=True
+                            )
+                        else:
+                            new_session.follow_by_list(followlist=[f])
 
                         f_dict = {
                             'client_id': [user_id],
