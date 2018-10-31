@@ -19,7 +19,7 @@ def get_client_values():
     data_dict = insert_data()
     print("\nThese are the values inserted")
     for k, v in data_dict.items():
-        print(f'{k}:', v[0])
+        print('{}:'.format(k), v[0])
 
     values_ok = input("Are these values ok? y/n ")
     if values_ok not in ['y', 'n']:

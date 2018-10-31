@@ -4,8 +4,6 @@ sqlalchemy
 progressbar
 psycopg2-binary
 psycopg2
-awscli
 pyyaml
 pyhive
 tweepy
-instapy

@@ -28,7 +28,7 @@ os.chdir(LOGS_DIR)
 
 def get_user_id(username):
     user_id = get_df_from_query(
-        f"select id from clients where tw_username= '{username}'"
+        "select id from clients where tw_username= '{}'".format(username)
     )['id'].loc[0]
 
     return user_id
@@ -36,7 +36,7 @@ def get_user_id(username):
 
 def get_interaction_id(interaction):
     int_id = get_df_from_query(
-        f"select id from interaction_ids where name = '{interaction}'"
+        "select id from interaction_ids where name = '{}'".format(interaction)
     )['id'].loc[0]
 
     return int_id
