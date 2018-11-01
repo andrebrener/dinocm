@@ -2,13 +2,15 @@ import os
 
 import pandas as pd
 
-from db_data import DB_HOST, DB_NAME, DB_USERNAME
+from db_data import DB_HOST, DB_NAME, DB_PASS, DB_USERNAME
 from dbconnectors import PostgreSqlDb
 
 LC_DIR = os.path.dirname(os.path.realpath(__file__))
 PROJECT_DIR = LC_DIR[:LC_DIR.index('lib_common')]
 
-db = PostgreSqlDb(username=DB_USERNAME, host=DB_HOST, database=DB_NAME)
+db = PostgreSqlDb(
+    username=DB_USERNAME, host=DB_HOST, database=DB_NAME, password=DB_PASS
+)
 
 
 def create_tables(tables):
