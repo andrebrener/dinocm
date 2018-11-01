@@ -100,11 +100,11 @@ def main(
     max_interactions, min_followers, min_following, follow_for_like=False
 ):
     media_id = get_media_id()
-    # turn_follow_on(
-        # max_interactions, min_followers, min_following, media_id,
-        # follow_for_like
-    # )
-    # take_a_nap(3000, 10000)
+    turn_follow_on(
+        max_interactions, min_followers, min_following, media_id,
+        follow_for_like
+    )
+    take_a_nap(3000, 10000)
     turn_unfollow_on(max_interactions, media_id)
     take_a_nap(3000, 10000)
     main(max_interactions)
