@@ -6,7 +6,8 @@ import logging.config
 from instapy import InstaPy
 
 from functions import (
-    follow_users, LIB_COMMON_DIR, PROJECT_DIR, take_a_nap, unfollow_haters
+    follow_users, get_user_id, LIB_COMMON_DIR, PROJECT_DIR, take_a_nap,
+    unfollow_haters
 )
 from user_data import user_data
 
@@ -29,6 +30,23 @@ def get_media_id():
     )['id'].loc[0]
 
     return media_id
+
+
+def get_dino_follows(client_id, media_id, int_name):
+    followers = get_df_from_query(
+        """select username
+           from interactions
+           where client_id = {cl_id}
+           and media_id= {m_id}
+           and interaction_id in
+           (
+            select id
+            from interaction_ids where name = '{int_name}'
+           )
+           """.format(cl_id=client_id, m_id=media_id, int_name=int_name)
+    )['username'].tolist()
+
+    return followers
 
 
 def turn_follow_on(
@@ -58,14 +76,19 @@ def turn_unfollow_on(max_interactions, media_id):
     for username, vals in user_data.items():
 
         key = vals['key']
-        untouchable_users = vals['untouchable_users']
+
+        client_id = get_user_id(username)
+
+        unfollow_list = get_dino_follows(client_id, media_id, 'follow')
+        if len(unfollow_list) == 0:
+            continue
 
         session = InstaPy(
             username=username, password=key, headless_browser=True
         )
 
         unfollow_haters(
-            session, username, untouchable_users, media_id, max_interactions
+            session, username, unfollow_list, media_id, max_interactions
         )
 
     logger.info("Finished unfollowing")
@@ -77,11 +100,11 @@ def main(
     max_interactions, min_followers, min_following, follow_for_like=False
 ):
     media_id = get_media_id()
-    turn_follow_on(
-        max_interactions, media_id, min_followers, min_following,
-        follow_for_like
-    )
-    take_a_nap(3000, 10000)
+    # turn_follow_on(
+        # max_interactions, min_followers, min_following, media_id,
+        # follow_for_like
+    # )
+    # take_a_nap(3000, 10000)
     turn_unfollow_on(max_interactions, media_id)
     take_a_nap(3000, 10000)
     main(max_interactions)
@@ -89,4 +112,4 @@ def main(
 
 if __name__ == '__main__':
     logging.config.dictConfig(config['logger'])
-    main(1, 50, 10000, follow_for_like=False)
+    main(1, 50, 10, follow_for_like=False)

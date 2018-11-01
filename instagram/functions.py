@@ -174,7 +174,7 @@ def follow_users(
 
 
 def unfollow_haters(
-    session, username, untouchable_users, media_id, max_interactions
+    session, username, unfollow_list, media_id, max_interactions
 ):
     user_id = get_user_id(username)
     int_id = get_interaction_id('unfollow')
@@ -182,36 +182,39 @@ def unfollow_haters(
     n = 1
 
     with smart_run(session):
-        my_follows = session.grab_following(
-            username=username,
-            amount="full",
-            live_match=False,
-            store_locally=False
-        )
-        for f in my_follows:
+        for f in unfollow_list:
             if n > max_interactions:
                 return None
-            if f not in untouchable_users:
-                try:
-                    session.unfollow_users(customList=(True, [f], "all"))
-                    user_followers, user_follows = get_account_data(session, f)
+            try:
+                session.unfollow_users(customList=(True, [f], "all"))
+                user_followers = session.grab_followers(
+                    username=f,
+                    amount="full",
+                    live_match=False,
+                    store_locally=False
+                )
+                user_follows = session.grab_following(
+                    username=f,
+                    amount="full",
+                    live_match=False,
+                    store_locally=False
+                )
 
-                    f_dict = {
-                        'client_id': [user_id],
-                        'content_id': [f.id],
-                        'username': [f],
-                        'user_followers': [len(user_followers)],
-                        'user_follows': [len(user_follows)],
-                        'created_on': [datetime.now()],
-                        'interaction_id': [int_id],
-                        'media_id': [media_id]
-                    }
+                f_dict = {
+                    'client_id': [user_id],
+                    'username': [f],
+                    'user_followers': [len(user_followers)],
+                    'user_follows': [len(user_follows)],
+                    'created_on': [datetime.now()],
+                    'interaction_id': [int_id],
+                    'media_id': [media_id]
+                }
 
-                    follow_df = pd.DataFrame(f_dict)
-                    insert_values(follow_df, 'interactions')
-                    n += 1
-                    take_a_nap()
-                except Exception as e:
-                    logger.info(e)
+                follow_df = pd.DataFrame(f_dict)
+                insert_values(follow_df, 'interactions')
+                n += 1
+                take_a_nap()
+            except Exception as e:
+                logger.info(e)
 
     return None
