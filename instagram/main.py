@@ -54,6 +54,7 @@ def turn_follow_on(
 ):
 
     for username, vals in user_data.items():
+        logger.info("Following for {}".format(username))
         key = vals['key']
         users_to_copy = vals['users_to_copy']
 
@@ -74,12 +75,13 @@ def turn_follow_on(
 def turn_unfollow_on(max_interactions, media_id):
 
     for username, vals in user_data.items():
+        logger.info("Unfollowing for {}".format(username))
 
         key = vals['key']
 
         client_id = get_user_id(username)
-
         unfollow_list = get_dino_follows(client_id, media_id, 'follow')
+
         if len(unfollow_list) == 0:
             continue
 
@@ -112,4 +114,4 @@ def main(
 
 if __name__ == '__main__':
     logging.config.dictConfig(config['logger'])
-    main(1, 50, 10, follow_for_like=False)
+    main(50, 50, 10, follow_for_like=False)
