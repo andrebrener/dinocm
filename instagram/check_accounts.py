@@ -19,6 +19,7 @@ from user_data import user_data
 for p in [LIB_COMMON_DIR, PROJECT_DIR]:
     sys.path.append(p)
 
+from config import config
 from db_handle import insert_values
 
 logger = logging.getLogger('main_logger')
@@ -32,6 +33,7 @@ def get_users_accounts():
     media_id = get_media_id()
 
     for username, vals in user_data.items():
+        logger.info("Getting data for {}".format(username))
         key = vals['key']
 
         session = InstaPy(
@@ -56,4 +58,5 @@ def get_users_accounts():
 
 
 if __name__ == '__main__':
+    logging.config.dictConfig(config['logger'])
     get_users_accounts()
