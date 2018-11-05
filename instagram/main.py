@@ -114,4 +114,4 @@ def main(
 
 if __name__ == '__main__':
     logging.config.dictConfig(config['logger'])
-    main(50, 50, 10, follow_for_like=False)
+    main(200, 50, 1000, follow_for_like=False)
