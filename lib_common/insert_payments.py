@@ -25,7 +25,7 @@ def insert_data():
     data_dict = {}
     for d in [
         'ig_username', 'amount', 'date (dd-mm-yy)',
-        'method (MP, MP Susc, Cash)'
+        'method (mp, mp susc, cash, pp, btc)'
     ]:
         inp = input("Please input {}: ".format(d))
         key = d
@@ -40,7 +40,9 @@ def insert_data():
                 inp = datetime.strptime(inp, '%d-%m-%Y')
 
         if 'method' in d:
-            inp = check_in_values(d, inp, ['MP', 'MP Susc', 'Cash'])
+            inp = check_in_values(
+                d, inp, ['mp', 'mp susc', 'cash', 'pp', 'btc']
+            )
 
         data_dict[key] = [inp]
 
