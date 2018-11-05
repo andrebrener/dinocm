@@ -73,7 +73,7 @@ def turn_follow_on(max_interactions, media_id, follow_for_like):
     return None
 
 
-def turn_unfollow_on(max_interactions, media_id):
+def turn_unfollow_on(max_interactions, media_id, unfollow_num='dino'):
 
     for username, vals in user_data.items():
         logger.info("Unfollowing for {}".format(username))
@@ -81,14 +81,22 @@ def turn_unfollow_on(max_interactions, media_id):
         key = vals['key']
 
         client_id = get_user_id(username)
-        unfollow_list = get_dino_follows(client_id, media_id, 'follow')
-
-        if len(unfollow_list) == 0:
-            continue
 
         session = InstaPy(
             username=username, password=key, headless_browser=True
         )
+        if unfollow_num == 'dino':
+            unfollow_list = get_dino_follows(client_id, media_id, 'follow')
+        else:
+            unfollow_list = session.grab_followers(
+                username=username,
+                amount=unfollow_num,
+                live_match=False,
+                store_locally=False
+            )
+
+        if len(unfollow_list) == 0:
+            continue
 
         unfollow_haters(
             session, username, unfollow_list, media_id, max_interactions
@@ -99,14 +107,9 @@ def turn_unfollow_on(max_interactions, media_id):
     return None
 
 
-def main(
-    max_interactions, follow_for_like=False
-):
+def main(max_interactions, follow_for_like=False):
     media_id = get_media_id()
-    turn_follow_on(
-        max_interactions, media_id,
-        follow_for_like
-    )
+    turn_follow_on(max_interactions, media_id, follow_for_like)
     take_a_nap(3000, 10000)
     turn_unfollow_on(max_interactions, media_id)
     take_a_nap(3000, 10000)
