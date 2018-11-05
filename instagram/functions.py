@@ -70,25 +70,12 @@ def get_account_data(session, user):
 
 
 def follow_users(
-    session,
-    username,
-    users,
-    media_id,
-    max_interactions,
-    min_followers,
-    min_following,
-    follow_for_like,
-    not_follow_users=[]
+    session, username, users, media_id, max_interactions, min_followers,
+    min_following, follow_for_like
 ):
 
     user_id = get_user_id(username)
     int_id = get_interaction_id('follow')
-
-    my_followers, my_follows = get_account_data(session, username)
-
-    total_not_follow = not_follow_users + my_followers + my_follows
-
-    unique_not_follow = set(total_not_follow)
 
     n = 1
     for u in sample(users, len(users)):
@@ -103,7 +90,7 @@ def follow_users(
 
             followers = new_session.grab_followers(
                 username=u,
-                amount="full",
+                amount=5 * max_interactions,
                 live_match=False,
                 store_locally=False
             )
@@ -121,46 +108,43 @@ def follow_users(
                 if n > max_interactions:
                     return None
 
-                if f not in unique_not_follow:
-                    try:
-                        user_followers, user_follows = session.get_follow_count(
-                            f
-                        )
+                try:
+                    user_followers, user_follows = session.get_follow_count(f)
 
-                        if not (
-                            user_followers >= min_following
-                            and user_follows >= min_following
-                        ):
-                            continue
-
-                        if follow_for_like:
-                            new_session.follow_likers(
-                                [f],
-                                photos_grab_amount=3,
-                                follow_likers_per_photo=25,
-                                randomize=True
-                            )
-                        else:
-                            new_session.follow_by_list(followlist=[f])
-
-                        f_dict = {
-                            'client_id': [user_id],
-                            'username': [f],
-                            'user_followers': [user_followers],
-                            'user_follows': [user_follows],
-                            'created_on': [datetime.now()],
-                            'interaction_id': [int_id],
-                            'user_to_follow': [u],
-                            'media_id': [media_id]
-                        }
-                        follow_df = pd.DataFrame(f_dict)
-                        insert_values(follow_df, 'interactions')
-                        n += 1
-
-                        take_a_nap()
-                    except Exception as e:
-                        logger.info(e)
+                    if not (
+                        user_followers >= min_following
+                        and user_follows >= min_following
+                    ):
                         continue
+
+                    if follow_for_like:
+                        new_session.follow_likers(
+                            [f],
+                            photos_grab_amount=3,
+                            follow_likers_per_photo=25,
+                            randomize=True
+                        )
+                    else:
+                        new_session.follow_by_list(followlist=[f])
+
+                    f_dict = {
+                        'client_id': [user_id],
+                        'username': [f],
+                        'user_followers': [user_followers],
+                        'user_follows': [user_follows],
+                        'created_on': [datetime.now()],
+                        'interaction_id': [int_id],
+                        'user_to_follow': [u],
+                        'media_id': [media_id]
+                    }
+                    follow_df = pd.DataFrame(f_dict)
+                    insert_values(follow_df, 'interactions')
+                    n += 1
+
+                    take_a_nap()
+                except Exception as e:
+                    logger.info(e)
+                    continue
 
     return None
 

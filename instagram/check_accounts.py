@@ -40,19 +40,20 @@ def get_users_accounts():
 
         client_id = get_user_id(username)
         followers_count, follows_count = session.get_follow_count(username)
-        followers = session.grab_followers(
-            username=username,
-            amount="full",
-            live_match=False,
-            store_locally=False
-        )
+        # followers = session.grab_followers(
+        # username=username,
+        # amount="full",
+        # live_match=False,
+        # store_locally=False
+        # )
 
         client_dict = {
             'client_id': [client_id],
             'media_id': [media_id],
             'followers': [followers_count],
             'follows': [len(follows_count)],
-            'follower_users': [json.dumps(followers)],
+            # 'follower_users': [json.dumps(followers)],
+            'follower_users': [],
             'created_on': [datetime.now()]
         }
 
