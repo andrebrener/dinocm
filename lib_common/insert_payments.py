@@ -13,20 +13,35 @@ def get_user_id(username):
     return user_id
 
 
+def check_in_values(d, val, val_list):
+    if val in val_list:
+        return val
+    else:
+        val = input("Please input {}: ".format(d))
+        return check_in_values(d, val, val_list)
+
+
 def insert_data():
     data_dict = {}
-    for d in ['ig_username', 'amount', 'date (dd-mm-yy)']:
+    for d in [
+        'ig_username', 'amount', 'date (dd-mm-yy)',
+        'method (MP, MP Susc, Cash)'
+    ]:
         inp = input("Please input {}: ".format(d))
         key = d
         if d == 'ig_username':
             key = 'client_id'
-            val = get_user_id(inp)
+            inp = get_user_id(inp)
         if 'date' in d:
             key = 'date'
             if inp == '':
                 inp = date.today()
             else:
                 inp = datetime.strptime(inp, '%d-%m-%Y')
+
+        if 'method' in d:
+            inp = check_in_values(d, inp, ['MP', 'MP Susc', 'Cash'])
+
         data_dict[key] = [inp]
 
     return data_dict
