@@ -40,6 +40,7 @@ def insert_data():
                 inp = datetime.strptime(inp, '%d-%m-%Y')
 
         if 'method' in d:
+            key = 'method'
             inp = check_in_values(
                 d, inp, ['mp', 'mp susc', 'cash', 'pp', 'btc']
             )
