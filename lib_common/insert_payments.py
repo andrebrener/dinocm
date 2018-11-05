@@ -27,7 +27,7 @@ def insert_data():
         'ig_username', 'amount', 'date (dd-mm-yy)',
         'method (mp, mp susc, cash, pp, btc)'
     ]:
-        inp = input("Please input {}: ".format(d))
+        inp = str.strip(input("Please input {}: ".format(d)))
         key = d
         if d == 'ig_username':
             key = 'client_id'

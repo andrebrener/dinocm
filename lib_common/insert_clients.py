@@ -10,7 +10,7 @@ def insert_data():
     for val in [
         'tw_username', 'ig_username', 'firstname', 'lastname', 'email'
     ]:
-        data_dict[val] = [input("Please input {}: ".format(val))]
+        data_dict[val] = [str.strip(input("Please input {}: ".format(val)))]
 
     return data_dict
 
