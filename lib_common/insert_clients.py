@@ -8,7 +8,7 @@ from db_handle import insert_values
 def insert_data():
     data_dict = {}
     for val in [
-        'tw_username', 'ig_username', 'phone', 'firstname', 'lastname', 'email'
+        'tw_username', 'ig_username', 'firstname', 'lastname', 'email'
     ]:
         data_dict[val] = [input("Please input {}: ".format(val))]
 
