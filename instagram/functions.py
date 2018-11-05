@@ -117,6 +117,7 @@ def follow_users(
             new_session.set_do_follow(enabled=True, times=1)
 
             for f in sample(followers, len(followers)):
+                logger.info("Following {} followers".format(f))
                 if n > max_interactions:
                     return None
 

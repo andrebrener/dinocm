@@ -41,6 +41,8 @@ def get_users_accounts():
         )
 
         client_id = get_user_id(username)
+        followers, follows = session.get_follow_count(username)
+        import pdb; pdb.set_trace()  # noqa # yapf: disable
         followers, follows = get_account_data(session, username)
         client_dict = {
             'client_id': [client_id],
