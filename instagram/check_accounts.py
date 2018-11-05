@@ -11,9 +11,7 @@ import pandas as pd
 from instapy import InstaPy
 
 from main import get_media_id
-from functions import (
-    get_account_data, get_user_id, LIB_COMMON_DIR, PROJECT_DIR
-)
+from functions import get_user_id, LIB_COMMON_DIR, PROJECT_DIR
 from user_data import user_data
 
 for p in [LIB_COMMON_DIR, PROJECT_DIR]:
@@ -41,14 +39,19 @@ def get_users_accounts():
         )
 
         client_id = get_user_id(username)
-        followers, follows = session.get_follow_count(username)
-        import pdb; pdb.set_trace()  # noqa # yapf: disable
-        followers, follows = get_account_data(session, username)
+        followers_count, follows_count = session.get_follow_count(username)
+        followers = session.grab_followers(
+            username=username,
+            amount="full",
+            live_match=False,
+            store_locally=False
+        )
+
         client_dict = {
             'client_id': [client_id],
             'media_id': [media_id],
-            'followers': [len(followers)],
-            'follows': [len(follows)],
+            'followers': [followers_count],
+            'follows': [len(follows_count)],
             'follower_users': [json.dumps(followers)],
             'created_on': [datetime.now()]
         }

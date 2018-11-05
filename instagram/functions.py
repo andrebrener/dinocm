@@ -123,22 +123,13 @@ def follow_users(
 
                 if f not in unique_not_follow:
                     try:
-                        user_followers = new_session.grab_followers(
-                            username=f,
-                            amount="full",
-                            live_match=False,
-                            store_locally=False
-                        )
-                        user_follows = new_session.grab_following(
-                            username=f,
-                            amount="full",
-                            live_match=False,
-                            store_locally=False
+                        user_followers, user_follows = session.get_follow_count(
+                            f
                         )
 
                         if not (
-                            len(user_followers) >= min_following
-                            and len(user_follows) >= min_following
+                            user_followers >= min_following
+                            and user_follows >= min_following
                         ):
                             continue
 
@@ -155,8 +146,8 @@ def follow_users(
                         f_dict = {
                             'client_id': [user_id],
                             'username': [f],
-                            'user_followers': [len(user_followers)],
-                            'user_follows': [len(user_follows)],
+                            'user_followers': [user_followers],
+                            'user_follows': [user_follows],
                             'created_on': [datetime.now()],
                             'interaction_id': [int_id],
                             'user_to_follow': [u],
@@ -188,24 +179,14 @@ def unfollow_haters(
                 return None
             try:
                 session.unfollow_users(customList=(True, [f], "all"))
-                user_followers = session.grab_followers(
-                    username=f,
-                    amount="full",
-                    live_match=False,
-                    store_locally=False
-                )
-                user_follows = session.grab_following(
-                    username=f,
-                    amount="full",
-                    live_match=False,
-                    store_locally=False
-                )
+
+                user_followers, user_follows = session.get_follow_count(f)
 
                 f_dict = {
                     'client_id': [user_id],
                     'username': [f],
-                    'user_followers': [len(user_followers)],
-                    'user_follows': [len(user_follows)],
+                    'user_followers': [user_followers],
+                    'user_follows': [user_follows],
                     'created_on': [datetime.now()],
                     'interaction_id': [int_id],
                     'media_id': [media_id]
