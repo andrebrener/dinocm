@@ -15,11 +15,14 @@ def get_user_id(username):
 
 def insert_data():
     data_dict = {}
-    for val in ['ig_username', 'amount', 'date']:
+    for val in ['ig_username', 'amount', 'date (dd-mm-yy)']:
         key = val
         if val == 'ig_username':
             key = get_user_id(val)
-        data_dict[key] = [input("Please input {}: ".format(val))]
+        inp = input("Please input {}: ".format(val))
+        if 'date' in val:
+            inp = datetime.strptime(inp, '%d-%b-%Y')
+        data_dict[key] = []
 
     if data_dict['date'] == '':
         data_dict['date'] = date.today()
