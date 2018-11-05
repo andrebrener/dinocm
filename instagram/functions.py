@@ -51,27 +51,9 @@ def take_a_nap(min_time=40, max_time=120):
     sleep(wait)
 
 
-def get_account_data(session, user):
-    with smart_run(session):
-        my_followers = session.grab_followers(
-            username=user,
-            amount="full",
-            live_match=False,
-            store_locally=False
-        )
-        my_follows = session.grab_following(
-            username=user,
-            amount="full",
-            live_match=False,
-            store_locally=False
-        )
-
-        return my_followers, my_follows
-
-
 def follow_users(
     session, username, users, media_id, max_interactions, min_followers,
-    min_following, follow_for_like
+    min_following, max_followers, follow_for_like
 ):
 
     user_id = get_user_id(username)
@@ -114,6 +96,7 @@ def follow_users(
                     if not (
                         user_followers >= min_following
                         and user_follows >= min_following
+                        and user_followers <= max_followers
                     ):
                         continue
 

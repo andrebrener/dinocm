@@ -49,14 +49,15 @@ def get_dino_follows(client_id, media_id, int_name):
     return followers
 
 
-def turn_follow_on(
-    max_interactions, min_followers, min_following, media_id, follow_for_like
-):
+def turn_follow_on(max_interactions, media_id, follow_for_like):
 
     for username, vals in user_data.items():
         logger.info("Following for {}".format(username))
         key = vals['key']
         users_to_copy = vals['users_to_copy']
+        min_followers = vals['min_followers']
+        max_followers = vals['max_followers']
+        min_following = vals['min_following']
 
         session = InstaPy(
             username=username, password=key, headless_browser=True
@@ -64,7 +65,7 @@ def turn_follow_on(
 
         follow_users(
             session, username, users_to_copy, media_id, max_interactions,
-            min_followers, min_following, follow_for_like
+            min_followers, min_following, max_followers, follow_for_like
         )
 
     logger.info("Finished following")
@@ -99,11 +100,11 @@ def turn_unfollow_on(max_interactions, media_id):
 
 
 def main(
-    max_interactions, min_followers, min_following, follow_for_like=False
+    max_interactions, follow_for_like=False
 ):
     media_id = get_media_id()
     turn_follow_on(
-        max_interactions, min_followers, min_following, media_id,
+        max_interactions, media_id,
         follow_for_like
     )
     take_a_nap(3000, 10000)
@@ -114,4 +115,4 @@ def main(
 
 if __name__ == '__main__':
     logging.config.dictConfig(config['logger'])
-    main(200, 50, 1000, follow_for_like=False)
+    main(200)

@@ -41,7 +41,7 @@ def build_db():
         create_tables(
             [
                 'clients', 'media_ids', 'interaction_ids', 'clients_accounts',
-                'interactions'
+                'interactions', 'payments'
             ]
         )
         for t in ['media_ids', 'interaction_ids']:
