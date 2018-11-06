@@ -5,6 +5,8 @@ import logging.config
 
 from instapy import InstaPy
 
+from test_user import test_user
+
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 INSTAGRAM_DIR = TEST_DIR[:TEST_DIR.index('tests')]
 
@@ -106,5 +108,4 @@ def run_test(test_user, max_interactions, cons_runs=4, follow_for_like=False):
 
 if __name__ == '__main__':
     logging.config.dictConfig(config['logger'])
-    test_user = 'test'
     run_test(test_user, 40)
