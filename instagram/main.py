@@ -107,10 +107,13 @@ def turn_unfollow_on(max_interactions, media_id, unfollow_num='dino'):
     return None
 
 
-def main(max_interactions, follow_for_like=False):
+def main(max_interactions, cons_runs=4, follow_for_like=False):
     media_id = get_media_id()
-    turn_follow_on(max_interactions, media_id, follow_for_like)
-    take_a_nap(3000, 10000)
+    n = 1
+    while n <= cons_runs:
+        turn_follow_on(max_interactions, media_id, follow_for_like)
+        take_a_nap(3000, 10000)
+        n += 1
     turn_unfollow_on(max_interactions, media_id)
     take_a_nap(3000, 10000)
     main(max_interactions)
@@ -118,4 +121,4 @@ def main(max_interactions, follow_for_like=False):
 
 if __name__ == '__main__':
     logging.config.dictConfig(config['logger'])
-    main(200)
+    main(40)
