@@ -61,7 +61,7 @@ def follow_users(
 
     n = 1
     for u in sample(users, len(users)):
-
+        logger.info("Following {} followers".format(u))
         new_session = InstaPy(
             username=username,
             password=user_data[username]['key'],
@@ -88,7 +88,7 @@ def follow_users(
             failed_number = 0
 
             for f in sample(followers, len(followers)):
-                logger.info("Following {} followers".format(f))
+
                 if n > max_interactions:
                     return None
 
