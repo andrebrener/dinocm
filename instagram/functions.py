@@ -85,10 +85,15 @@ def follow_users(
 
             new_session.set_do_follow(enabled=True, times=1)
 
+            failed_number = 0
+
             for f in sample(followers, len(followers)):
                 logger.info("Following {} followers".format(f))
                 if n > max_interactions:
                     return None
+
+                if failed_number >= 10:
+                    continue
 
                 try:
                     user_followers, user_follows = session.get_follow_count(f)
@@ -125,7 +130,9 @@ def follow_users(
                     n += 1
 
                     take_a_nap()
+                    failed_number = 0
                 except Exception as e:
+                    failed_number += 1
                     logger.info(e)
                     continue
 
