@@ -5,13 +5,13 @@ import logging
 import logging.config
 
 from datetime import datetime
-from dino_data import DINO_USER, DINO_PASS
 
 import pandas as pd
 
 from instapy import InstaPy
 
 from main import get_media_id
+from dino_data import DINO_PASS, DINO_USER
 from functions import LIB_COMMON_DIR, PROJECT_DIR
 
 for p in [LIB_COMMON_DIR, PROJECT_DIR]:
@@ -64,10 +64,8 @@ def get_users_accounts():
             'followers': [followers_count],
             'follows': [follows_count],
             # 'follower_users': [json.dumps(followers)],
-            'follower_users': [],
             'created_on': [datetime.now()]
         }
-        import pdb; pdb.set_trace()  # noqa # yapf: disable
 
         client_df = pd.DataFrame(client_dict)
         insert_values(client_df, 'clients_accounts')
