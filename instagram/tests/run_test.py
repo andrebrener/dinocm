@@ -89,7 +89,7 @@ def turn_unfollow_on(
             session, username, unfollow_list, media_id, max_interactions
         )
 
-    logger.info("Finished unfollowing")
+        logger.info("Finished unfollowing")
 
     return None
 

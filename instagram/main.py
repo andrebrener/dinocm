@@ -50,8 +50,11 @@ def get_dino_follows(client_id, media_id, int_name):
 
 
 def turn_follow_on(max_interactions, media_id, follow_for_like):
-
     for username, vals in user_data.items():
+
+        is_test = vals['is_test']
+        if is_test:
+            continue
         logger.info("Following for {}".format(username))
         key = vals['key']
         users_to_copy = vals['users_to_copy']
@@ -76,6 +79,9 @@ def turn_follow_on(max_interactions, media_id, follow_for_like):
 def turn_unfollow_on(max_interactions, media_id, unfollow_num='dino'):
 
     for username, vals in user_data.items():
+        is_test = vals['is_test']
+        if is_test:
+            continue
         logger.info("Unfollowing for {}".format(username))
 
         key = vals['key']

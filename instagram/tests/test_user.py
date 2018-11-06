@@ -1,1 +1,1 @@
-test_user = ''
+test_user = 'mauracenturion.estetica'
